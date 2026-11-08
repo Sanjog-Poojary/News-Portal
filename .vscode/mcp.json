@@ -1,0 +1,17 @@
+{
+  "servers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "--yes",
+        "@playwright/mcp@latest",
+        "--browser",
+        "chrome",
+        "--executable-path",
+        "C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+        "--allowed-hosts",
+        "localhost,127.0.0.1"
+      ]
+    }
+  }
+}
