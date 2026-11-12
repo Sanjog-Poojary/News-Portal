@@ -17,6 +17,25 @@ start.bat
 
 ---
 
+## Docker
+
+Docker Compose runs MongoDB, the Express/Socket.IO server, and the production Nginx frontend:
+
+```bash
+copy server\.env.example server\.env
+docker compose up --build
+```
+
+- **Production frontend container:** [http://localhost:8080](http://localhost:8080)
+- **Backend health check:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
+- **MongoDB data:** stored in the `newsportal_mongo_data` Docker volume
+
+Keep `server/.env` local. For deployment, provide `JWT_SECRET`, `GNEWS_API_KEY`, and other environment values through the hosting platform's secret manager.
+
+The GitHub Actions workflow in [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) builds the client, checks server syntax, and builds both Docker images on pushes and pull requests.
+
+---
+
 ## 📁 Project Structure & Documentation
 
 All core architectural and design specifications are stored in the [`docs/`](./docs/) folder:

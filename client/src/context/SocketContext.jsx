@@ -35,7 +35,7 @@ export function SocketProvider({ children }) {
       .catch(err => console.warn('Could not load initial live feed:', err));
 
     // Connect to WebSocket server
-    const socketInstance = io('http://localhost:5000', {
+    const socketInstance = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000', {
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 5,
       reconnectionDelay: 1000

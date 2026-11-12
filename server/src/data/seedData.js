@@ -328,7 +328,8 @@ const seedForumThreads = [
         author: {
           _id: 'usr_author_01',
           name: 'Elena Rostova',
-          avatar: ''
+          avatar: '',
+          role: 'author'
         },
         content: 'Cloud absorption remains the primary hurdle for ground-to-space links. Optical ground stations need geographic diversity across high-altitude desert plateaus to achieve 99.999% availability.',
         createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString()
@@ -375,7 +376,8 @@ const seedForumThreads = [
         author: {
           _id: 'usr_reader_01',
           name: 'Aria Chen',
-          avatar: ''
+          avatar: '',
+          role: 'reader'
         },
         content: 'This transparency is the reason I rely on NEWS.PORTAL over standard aggregator feeds. Please keep the citation URLs visible directly in the reading view.',
         createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString()
@@ -392,6 +394,7 @@ const seedFactCheckLogs = [
     _id: 'fcl_001',
     articleId: 'art_003',
     articleTitle: 'Geopolitical AI Treaties: The G20 Digital Non-Proliferation Accord',
+    editorId: 'usr_admin_01',
     editorName: 'Kaelen Thorne',
     claimIndex: 0,
     originalStatus: 'Disputed',
