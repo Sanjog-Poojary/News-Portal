@@ -34,10 +34,16 @@ export function SocketProvider({ children }) {
       .then(items => setLiveFeedItems(items))
       .catch(err => console.warn('Could not load initial live feed:', err));
 
-    // Connect to WebSocket server
-    const socketInstance = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000', {
+    // Connect to WebSocket server (auto-detect origin in deployed environments)
+    const rawSocketUrl = import.meta.env.VITE_SOCKET_URL;
+    const socketUrl = (rawSocketUrl && rawSocketUrl.trim() !== '')
+      ? rawSocketUrl
+      : (typeof window !== 'undefined' && window.location.port === '5173' ? 'http://localhost:5000' : undefined);
+
+    const socketInstance = io(socketUrl, {
+      path: '/socket.io',
       transports: ['websocket', 'polling'],
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 10,
       reconnectionDelay: 1000
     });
 

@@ -134,6 +134,11 @@ router.post(
       authorUser
     );
 
+    const io = req.app.get('io');
+    if (io && newArticle.status === 'published') {
+      io.emit('article:new', newArticle);
+    }
+
     res.status(201).json(newArticle);
   }
 );
@@ -151,6 +156,10 @@ router.put(
     try {
       const user = store.getUserById(req.user.id);
       const updated = store.updateArticle(req.params.id, req.body, user);
+      const io = req.app.get('io');
+      if (io) {
+        io.emit('article:update', updated);
+      }
       res.json(updated);
     } catch (err) {
       res.status(400).json({ error: err.message });
@@ -165,6 +174,10 @@ router.post('/:id/like', (req, res) => {
   const newCount = store.toggleLike(req.params.id);
   if (newCount === null) {
     return res.status(404).json({ error: 'Article not found' });
+  }
+  const io = req.app.get('io');
+  if (io) {
+    io.emit('article:like', { articleId: req.params.id, likes: newCount });
   }
   res.json({ likeCount: newCount });
 });

@@ -1,4 +1,7 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const rawApiBase = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = (rawApiBase && rawApiBase.trim() !== '')
+  ? rawApiBase
+  : (typeof window !== 'undefined' && window.location.port !== '5173' ? '/api' : 'http://localhost:5000/api');
 
 function getAuthHeaders() {
   const token = localStorage.getItem('news_portal_token');

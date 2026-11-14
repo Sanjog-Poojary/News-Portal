@@ -57,6 +57,10 @@ router.post(
     }
 
     const thread = store.createForumThread({ board, title, content, sourceUrl, user });
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('forum:thread:new', thread);
+    }
     res.status(201).json(thread);
   }
 );
@@ -79,12 +83,18 @@ router.post(
       const thread = store.getThreadById(req.params.id);
       const reply = store.addForumReply(req.params.id, { content: content.trim(), user });
       const io = req.app.get('io');
-      if (io && thread?.author?._id && thread.author._id !== req.user.id) {
-        io.to(`user:${thread.author._id}`).emit('forum:reply', {
-          threadId: thread._id,
-          threadTitle: thread.title,
+      if (io) {
+        io.emit('forum:thread:reply', {
+          threadId: req.params.id,
           reply
         });
+        if (thread?.author?._id && thread.author._id !== req.user.id) {
+          io.to(`user:${thread.author._id}`).emit('forum:reply', {
+            threadId: thread._id,
+            threadTitle: thread.title,
+            reply
+          });
+        }
       }
       res.status(201).json(reply);
     } catch (err) {
@@ -100,6 +110,14 @@ router.post('/threads/:id/vote', authenticateToken, (req, res) => {
   const { direction = 'up' } = req.body;
   try {
     const result = store.voteForumThread(req.params.id, req.user.id, direction);
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('forum:thread:voted', {
+        threadId: req.params.id,
+        upvotes: result.upvotes,
+        downvotes: result.downvotes
+      });
+    }
     res.json(result);
   } catch (err) {
     res.status(404).json({ error: err.message });
@@ -113,6 +131,10 @@ router.post('/threads/:id/flag', authenticateToken, (req, res) => {
   const updated = store.flagForumThread(req.params.id);
   if (!updated) {
     return res.status(404).json({ error: 'Thread not found.' });
+  }
+  const io = req.app.get('io');
+  if (io && updated.flagged) {
+    io.emit('forum:thread:moderated', { threadId: updated._id, flagged: true });
   }
   res.json({ message: 'Thread reported for moderation review.', flagCount: updated.flagCount, flagged: updated.flagged });
 });

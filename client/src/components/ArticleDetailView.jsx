@@ -74,13 +74,29 @@ export default function ArticleDetailView({ articleId, onBack, onSelectCategory 
         setComments((prev) => prev.filter((c) => c._id !== commentId));
       };
 
+      const handleLikeUpdate = ({ articleId: targetId, likes: newCount }) => {
+        if (targetId === articleId) {
+          setLikes(newCount);
+        }
+      };
+
+      const handleArticleUpdate = (updatedArticle) => {
+        if (updatedArticle._id === articleId) {
+          setArticle(updatedArticle);
+        }
+      };
+
       socket.on('comment:new', handleNewComment);
       socket.on('comment:moderated', handleModeratedComment);
+      socket.on('article:like', handleLikeUpdate);
+      socket.on('article:update', handleArticleUpdate);
 
       return () => {
         socket.emit('article:leave', articleId);
         socket.off('comment:new', handleNewComment);
         socket.off('comment:moderated', handleModeratedComment);
+        socket.off('article:like', handleLikeUpdate);
+        socket.off('article:update', handleArticleUpdate);
       };
     }
 

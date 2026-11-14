@@ -24,7 +24,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const { liveFeedItems } = useSocket();
+  const { liveFeedItems, socket } = useSocket();
   const [forumDraft, setForumDraft] = useState(null);
   const [focusForumThreadId, setFocusForumThreadId] = useState(null);
   
@@ -97,6 +97,44 @@ export default function App() {
       })
       .catch((e) => console.warn('Could not compute counts:', e));
   }, []);
+
+  // Real-time Socket.io listeners for instant updates without manual refresh
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleArticleNew = (newArticle) => {
+      setArticles((prev) => [newArticle, ...prev.filter((a) => a._id !== newArticle._id)]);
+      setCategoryCounts((prev) => ({
+        ...prev,
+        All: (prev.All || 0) + 1,
+        [newArticle.category]: (prev[newArticle.category] || 0) + 1
+      }));
+    };
+
+    const handleArticleUpdate = (updatedArticle) => {
+      setArticles((prev) => prev.map((a) => (a._id === updatedArticle._id ? updatedArticle : a)));
+    };
+
+    const handleArticleDelete = ({ articleId }) => {
+      setArticles((prev) => prev.filter((a) => a._id !== articleId));
+    };
+
+    const handleArticleLike = ({ articleId, likes }) => {
+      setArticles((prev) => prev.map((a) => (a._id === articleId ? { ...a, likeCount: likes } : a)));
+    };
+
+    socket.on('article:new', handleArticleNew);
+    socket.on('article:update', handleArticleUpdate);
+    socket.on('article:delete', handleArticleDelete);
+    socket.on('article:like', handleArticleLike);
+
+    return () => {
+      socket.off('article:new', handleArticleNew);
+      socket.off('article:update', handleArticleUpdate);
+      socket.off('article:delete', handleArticleDelete);
+      socket.off('article:like', handleArticleLike);
+    };
+  }, [socket]);
 
   const handleSelectArticle = (article) => {
     navigateToView('article', article._id);

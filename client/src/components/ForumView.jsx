@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import Avatar from './Avatar';
 import {
   fetchForumThreads,
@@ -37,6 +38,7 @@ export default function ForumView({
   onDraftConsumed
 }) {
   const { user, isAuthenticated } = useAuth();
+  const { socket } = useSocket();
   const [activeBoard, setActiveBoard] = useState('all');
   const [sortOrder, setSortOrder] = useState('recent'); // 'recent' | 'top'
   const [threads, setThreads] = useState([]);
@@ -89,6 +91,58 @@ export default function ForumView({
   useEffect(() => {
     loadThreads();
   }, [activeBoard, sortOrder]);
+
+  // Real-time Socket.io listeners for instantaneous forum updates
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewThread = (newThread) => {
+      if (activeBoard === 'all' || activeBoard === newThread.board) {
+        setThreads((prev) => [newThread, ...prev.filter((t) => t._id !== newThread._id)]);
+      }
+    };
+
+    const handleThreadReply = ({ threadId, reply }) => {
+      setThreads((prev) =>
+        prev.map((t) => {
+          if (t._id === threadId) {
+            const replies = t.replies || [];
+            const updatedReplies = [...replies.filter((r) => r._id !== reply._id), reply];
+            return {
+              ...t,
+              replies: updatedReplies,
+              replyCount: updatedReplies.length
+            };
+          }
+          return t;
+        })
+      );
+    };
+
+    const handleThreadVoted = ({ threadId, upvotes, downvotes }) => {
+      setThreads((prev) =>
+        prev.map((t) => (t._id === threadId ? { ...t, upvotes, downvotes } : t))
+      );
+    };
+
+    const handleThreadModerated = ({ threadId, flagged }) => {
+      if (flagged) {
+        setThreads((prev) => prev.filter((t) => t._id !== threadId));
+      }
+    };
+
+    socket.on('forum:thread:new', handleNewThread);
+    socket.on('forum:thread:reply', handleThreadReply);
+    socket.on('forum:thread:voted', handleThreadVoted);
+    socket.on('forum:thread:moderated', handleThreadModerated);
+
+    return () => {
+      socket.off('forum:thread:new', handleNewThread);
+      socket.off('forum:thread:reply', handleThreadReply);
+      socket.off('forum:thread:voted', handleThreadVoted);
+      socket.off('forum:thread:moderated', handleThreadModerated);
+    };
+  }, [socket, activeBoard]);
 
   const handleCreateThread = async (e) => {
     e.preventDefault();
