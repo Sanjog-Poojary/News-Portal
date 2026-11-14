@@ -37,8 +37,8 @@ export default function BreakingTicker({ onSelectArticle }) {
     <div className="relative w-full z-40 bg-surface/90 backdrop-blur-md border-b border-surface-border shadow-xs">
       {/* Real-time Broadcast Toast Notification Popup */}
       {latestAlert && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 z-50 animate-slide-up">
-          <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white border border-teal-300 shadow-xl text-textPrimary">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 animate-slide-up w-[calc(100vw-2rem)] max-w-md">
+          <div className="flex items-center gap-2.5 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-white border border-teal-300 shadow-xl text-textPrimary">
             <div className="w-8 h-8 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600 animate-pulse border border-teal-200">
               <BellRing className="w-4 h-4" />
             </div>

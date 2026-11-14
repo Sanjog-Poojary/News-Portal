@@ -48,9 +48,9 @@ export default function HeroCarousel({ articles = [], onSelectArticle }) {
           </div>
 
           {/* Foreground Editorial Content */}
-          <div className="relative z-10 p-6 sm:p-10 md:p-12 max-w-4xl">
+          <div className="relative z-10 p-5 sm:p-10 md:p-12 max-w-4xl">
             {/* Meta Strip */}
-            <div className="flex flex-wrap items-center gap-3 mb-4">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
               <span className="px-3 py-1 rounded-full text-xs font-mono uppercase tracking-wider font-bold bg-teal-50 text-teal-800 border border-teal-200">
                 {current.category}
               </span>
@@ -71,34 +71,34 @@ export default function HeroCarousel({ articles = [], onSelectArticle }) {
             {/* Main Headline */}
             <h1
               onClick={() => onSelectArticle && onSelectArticle(current)}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-textPrimary tracking-tight leading-tight mb-4 hover:text-teal-700 cursor-pointer transition-colors"
+              className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-textPrimary tracking-tight leading-tight mb-3 sm:mb-4 hover:text-teal-700 cursor-pointer transition-colors"
             >
               {current.title}
             </h1>
 
             {/* Summary */}
-            <p className="text-sm sm:text-base text-slate-600 line-clamp-2 md:line-clamp-3 mb-6 max-w-3xl leading-relaxed">
+            <p className="text-xs sm:text-base text-slate-600 line-clamp-2 md:line-clamp-3 mb-5 sm:mb-6 max-w-3xl leading-relaxed">
               {current.summary}
             </p>
 
             {/* Author Credit & CTA */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-surface-border">
+            <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 pt-3 sm:pt-4 border-t border-surface-border">
               <div className="flex items-center gap-3">
                 <Avatar
                   name={current.author?.name}
                   src={current.author?.avatar}
-                  className="w-10 h-10 rounded-full border-2 border-teal-100 shadow-xs text-xs"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-teal-100 shadow-xs text-xs"
                 />
                 <div>
                   <p className="text-xs font-bold text-textPrimary">{current.author?.name}</p>
-                  <p className="text-[11px] text-textMuted font-mono">Verified Journalist</p>
+                  <p className="text-[10px] sm:text-[11px] text-textMuted font-mono">Verified Journalist</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
                 <button
                   onClick={() => onSelectArticle && onSelectArticle(current)}
-                  className="group px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-sm flex items-center gap-2"
+                  className="w-full sm:w-auto justify-center group px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-sm flex items-center gap-2"
                 >
                   <span>Read Full Investigation</span>
                   <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-0.5 transition-transform">
@@ -110,17 +110,17 @@ export default function HeroCarousel({ articles = [], onSelectArticle }) {
           </div>
 
           {/* Navigation Arrows */}
-          <div className="absolute top-6 right-6 z-20 flex items-center gap-2">
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center gap-2">
             <button
               onClick={handlePrev}
-              className="w-9 h-9 rounded-xl bg-white/90 border border-surface-border hover:border-teal-400 text-slate-600 hover:text-teal-700 flex items-center justify-center transition-all shadow-xs backdrop-blur-md"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/90 border border-surface-border hover:border-teal-400 text-slate-600 hover:text-teal-700 flex items-center justify-center transition-all shadow-xs backdrop-blur-md"
               aria-label="Previous Slide"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={handleNext}
-              className="w-9 h-9 rounded-xl bg-white/90 border border-surface-border hover:border-teal-400 text-slate-600 hover:text-teal-700 flex items-center justify-center transition-all shadow-xs backdrop-blur-md"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/90 border border-surface-border hover:border-teal-400 text-slate-600 hover:text-teal-700 flex items-center justify-center transition-all shadow-xs backdrop-blur-md"
               aria-label="Next Slide"
             >
               <ChevronRight className="w-4 h-4" />
@@ -128,7 +128,7 @@ export default function HeroCarousel({ articles = [], onSelectArticle }) {
           </div>
 
           {/* Slide Progress Indicators */}
-          <div className="absolute bottom-4 right-6 z-20 hidden md:flex items-center gap-1.5">
+          <div className="absolute bottom-3 right-4 sm:bottom-4 sm:right-6 z-20 flex items-center gap-1.5">
             {activeList.map((_, idx) => (
               <button
                 key={idx}

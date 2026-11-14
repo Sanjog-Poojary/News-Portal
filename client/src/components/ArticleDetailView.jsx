@@ -21,7 +21,8 @@ import {
   AlertTriangle,
   HelpCircle,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  X
 } from 'lucide-react';
 
 export default function ArticleDetailView({ articleId, onBack, onSelectCategory }) {
@@ -105,41 +106,57 @@ export default function ArticleDetailView({ articleId, onBack, onSelectCategory 
     };
   }, [articleId, socket]);
 
-  // Handle inline claim click / hover listeners
+  // Handle inline claim click / hover listeners with mobile touch support
   useEffect(() => {
     if (!article || !article.claims) return;
+
+    const handleClaimInteraction = (target) => {
+      const claimId = target.getAttribute('data-claim-id');
+      const matched = article.claims.find((c) => c.claimId === claimId);
+      if (matched) {
+        const rect = target.getBoundingClientRect();
+        setActiveTooltip({
+          claim: matched,
+          x: rect.left + window.scrollX,
+          y: rect.bottom + window.scrollY + 8
+        });
+      }
+    };
 
     const handleMouseOver = (e) => {
       const target = e.target.closest('.claim-highlight');
       if (target) {
-        const claimId = target.getAttribute('data-claim-id');
-        const matched = article.claims.find((c) => c.claimId === claimId);
-        if (matched) {
-          const rect = target.getBoundingClientRect();
-          setActiveTooltip({
-            claim: matched,
-            x: rect.left + window.scrollX,
-            y: rect.bottom + window.scrollY + 8
-          });
-        }
+        handleClaimInteraction(target);
       }
     };
 
     const handleMouseOut = (e) => {
       if (e.target.closest('.claim-highlight')) {
-        // slight delay to allow hovering into tooltip
         setTimeout(() => {
-          setActiveTooltip(null);
+          if (window.innerWidth >= 640) {
+            setActiveTooltip(null);
+          }
         }, 1200);
+      }
+    };
+
+    const handleClick = (e) => {
+      const target = e.target.closest('.claim-highlight');
+      if (target) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleClaimInteraction(target);
       }
     };
 
     document.addEventListener('mouseover', handleMouseOver);
     document.addEventListener('mouseout', handleMouseOut);
+    document.addEventListener('click', handleClick);
 
     return () => {
       document.removeEventListener('mouseover', handleMouseOver);
       document.removeEventListener('mouseout', handleMouseOut);
+      document.removeEventListener('click', handleClick);
     };
   }, [article]);
 
@@ -226,15 +243,15 @@ export default function ArticleDetailView({ articleId, onBack, onSelectCategory 
   return (
     <article className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in relative">
       
-      {/* Interactive Hover Tooltip for Inline Claims */}
+      {/* Desktop Floating Tooltip for Inline Claims */}
       {activeTooltip && (
         <div
           style={{
             position: 'absolute',
             top: `${activeTooltip.y}px`,
-            left: `${Math.min(activeTooltip.x, window.innerWidth - 360)}px`
+            left: `${Math.max(16, Math.min(activeTooltip.x, window.innerWidth - 350))}px`
           }}
-          className="z-50 w-80 p-4 rounded-2xl bg-white border border-teal-200 shadow-2xl animate-fade-in text-xs"
+          className="hidden sm:block z-50 w-80 p-4 rounded-2xl bg-white border border-teal-200 shadow-2xl animate-fade-in text-xs"
         >
           <div className="flex items-center justify-between gap-2 mb-2 pb-2 border-b border-slate-100">
             <span className="font-mono text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200">
@@ -272,6 +289,66 @@ export default function ArticleDetailView({ articleId, onBack, onSelectCategory 
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Mobile Touch Bottom Sheet for Inline Claims */}
+      {activeTooltip && (
+        <div
+          className="sm:hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex flex-col justify-end p-4 animate-fade-in"
+          onClick={() => setActiveTooltip(null)}
+        >
+          <div
+            className="w-full bg-white rounded-2xl border border-teal-200 p-5 shadow-2xl space-y-3 animate-slide-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200">
+                  Claim Verification
+                </span>
+                <span
+                  className={`font-mono text-[11px] font-bold px-2 py-0.5 rounded ${
+                    activeTooltip.claim.status === 'Verified'
+                      ? 'bg-teal-50 text-teal-800'
+                      : 'bg-amber-50 text-amber-800'
+                  }`}
+                >
+                  {activeTooltip.claim.status} ({activeTooltip.claim.confidence}%)
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveTooltip(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                aria-label="Close claim details"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-slate-800 text-xs font-semibold leading-relaxed">
+              "{activeTooltip.claim.claimText}"
+            </p>
+            {activeTooltip.claim.sources && activeTooltip.claim.sources.length > 0 && (
+              <div className="pt-1">
+                <p className="text-[10px] font-mono text-slate-400 mb-1.5">Indexed Evidence Citations:</p>
+                <div className="space-y-1.5">
+                  {activeTooltip.claim.sources.map((src, sIdx) => (
+                    <a
+                      key={sIdx}
+                      href={src.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between text-xs text-teal-700 bg-teal-50/50 p-2 rounded-xl border border-teal-100 font-medium"
+                    >
+                      <span className="truncate">{src.name}</span>
+                      <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -381,7 +458,7 @@ export default function ArticleDetailView({ articleId, onBack, onSelectCategory 
       </div>
 
       {/* High-Impact Hero Cover */}
-      <div className="relative aspect-[21/9] rounded-3xl overflow-hidden shadow-card-soft mb-10 bg-slate-100 border border-surface-border">
+      <div className="relative aspect-[16/9] sm:aspect-[21/9] rounded-2xl sm:rounded-3xl overflow-hidden shadow-card-soft mb-8 sm:mb-10 bg-slate-100 border border-surface-border">
         <img
           src={article.coverImage}
           alt={article.title}
@@ -390,7 +467,7 @@ export default function ArticleDetailView({ articleId, onBack, onSelectCategory 
       </div>
 
       {/* AI Fact-Check Verification Banner (DESIGN View 2) */}
-      <div className="mb-10 rounded-2xl bg-white border border-teal-200 p-6 sm:p-8 shadow-card-soft">
+      <div className="mb-8 sm:mb-10 rounded-2xl bg-white border border-teal-200 p-4 sm:p-8 shadow-card-soft">
         <div
           onClick={() => setShowClaimsTree(!showClaimsTree)}
           className="flex items-center justify-between cursor-pointer"
@@ -537,14 +614,14 @@ export default function ArticleDetailView({ articleId, onBack, onSelectCategory 
             </p>
           )}
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-1">
             <span className="text-[11px] font-mono text-slate-500">
               Guardrail: 3-second anti-spam throttle • Auto-moderation on 3 flags
             </span>
             <button
               type="submit"
               disabled={isPosting || !newComment.trim()}
-              className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase disabled:opacity-50 transition-all flex items-center gap-2 shadow-xs"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-xs"
             >
               <Send className="w-3.5 h-3.5" />
               <span>{isPosting ? 'Broadcasting...' : 'Post Comment'}</span>

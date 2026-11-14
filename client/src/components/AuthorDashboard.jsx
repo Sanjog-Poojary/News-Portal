@@ -218,13 +218,13 @@ export default function AuthorDashboard({ onSelectArticle }) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in space-y-8">
       
       {/* Header Banner */}
-      <div className="bg-white rounded-3xl border border-surface-border p-6 sm:p-10 shadow-card-soft flex flex-wrap items-center justify-between gap-6">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-surface-border p-5 sm:p-10 shadow-card-soft flex flex-wrap items-center justify-between gap-4 sm:gap-6">
         <div>
           <div className="flex items-center gap-2 text-xs font-mono font-bold text-teal-700 uppercase tracking-wider mb-2">
             <PenTool className="w-4 h-4" />
             <span>Author Studio & Editorial Suite</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-textPrimary tracking-tight">
+          <h1 className="text-xl sm:text-3xl font-extrabold text-textPrimary tracking-tight">
             Welcome, {user?.name || 'Elena Rostova'}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
@@ -237,7 +237,7 @@ export default function AuthorDashboard({ onSelectArticle }) {
             resetEditorFields();
             setIsComposing(!isComposing);
           }}
-          className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-sm flex items-center gap-2"
+          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-sm flex items-center justify-center gap-2"
         >
           <PlusCircle className="w-4 h-4" />
           <span>{isComposing ? 'Close Editor' : 'Compose New Story'}</span>
@@ -531,7 +531,63 @@ export default function AuthorDashboard({ onSelectArticle }) {
           <span className="text-[11px] font-mono text-slate-400">Filtered by Current Author</span>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile Stacked Card View */}
+        <div className="md:hidden space-y-3">
+          {articles.length === 0 ? (
+            <p className="py-8 text-center text-slate-400 font-mono text-xs">
+              No articles found. Click "Compose New Story" above to publish your first report!
+            </p>
+          ) : (
+            articles.map((art) => (
+              <div
+                key={art._id}
+                className="p-4 rounded-xl border border-surface-border bg-slate-50/50 space-y-2.5"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-200 text-slate-700">
+                      {art.category}
+                    </span>
+                    <p
+                      onClick={() => onSelectArticle && onSelectArticle(art)}
+                      className="font-bold text-sm text-textPrimary hover:text-teal-700 cursor-pointer line-clamp-2 mt-1"
+                    >
+                      {art.title}
+                    </p>
+                  </div>
+                  <TrustBadge trustScore={art.trustScore} size="sm" />
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] font-mono pt-2 border-t border-slate-200">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        art.status === 'published'
+                          ? 'bg-teal-50 text-teal-800 border border-teal-200'
+                          : 'bg-amber-50 text-amber-800 border border-amber-200'
+                      }`}
+                    >
+                      {art.status}
+                    </span>
+                    <span className="text-slate-400">
+                      {new Date(art.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => handleEditClick(art)}
+                    className="px-3 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-800 text-xs font-mono font-bold border border-teal-200 transition-colors"
+                  >
+                    Edit
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-slate-100 text-slate-400 font-mono text-[11px] uppercase tracking-wider">

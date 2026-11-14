@@ -106,13 +106,13 @@ export default function AdminDashboard({ onOpenBroadcast }) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
       
       {/* Header */}
-      <div className="bg-white rounded-3xl border border-surface-border p-6 sm:p-10 shadow-card-soft mb-8 flex flex-wrap items-center justify-between gap-6">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-surface-border p-5 sm:p-10 shadow-card-soft mb-6 sm:mb-8 flex flex-wrap items-center justify-between gap-4 sm:gap-6">
         <div>
           <div className="flex items-center gap-2 text-xs font-mono font-bold text-teal-700 uppercase tracking-wider mb-2">
             <ShieldAlert className="w-4 h-4" />
             <span>Platform Governance & Command</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-textPrimary tracking-tight">
+          <h1 className="text-xl sm:text-3xl font-extrabold text-textPrimary tracking-tight">
             Admin Control Center
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
@@ -141,12 +141,75 @@ export default function AdminDashboard({ onOpenBroadcast }) {
         </div>
       )}
 
+      {/* Mobile Horizontal Admin Tabs */}
+      <div className="md:hidden flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+        <button
+          onClick={() => setActiveTab('overview')}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex-shrink-0 ${
+            activeTab === 'overview'
+              ? 'bg-teal-600 text-white shadow-xs'
+              : 'bg-white text-slate-700 border border-surface-border'
+          }`}
+        >
+          <Sliders className="w-3.5 h-3.5" />
+          <span>Overview</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('rbac')}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex-shrink-0 ${
+            activeTab === 'rbac'
+              ? 'bg-teal-600 text-white shadow-xs'
+              : 'bg-white text-slate-700 border border-surface-border'
+          }`}
+        >
+          <Users className="w-3.5 h-3.5" />
+          <span>RBAC ({users.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('moderation')}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex-shrink-0 ${
+            activeTab === 'moderation'
+              ? 'bg-teal-600 text-white shadow-xs'
+              : 'bg-white text-slate-700 border border-surface-border'
+          }`}
+        >
+          <Flag className="w-3.5 h-3.5" />
+          <span>Moderation ({moderationItems.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('audit')}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex-shrink-0 ${
+            activeTab === 'audit'
+              ? 'bg-teal-600 text-white shadow-xs'
+              : 'bg-white text-slate-700 border border-surface-border'
+          }`}
+        >
+          <FileCheck2 className="w-3.5 h-3.5" />
+          <span>Audit Logs ({auditLogs.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('broadcast')}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex-shrink-0 ${
+            activeTab === 'broadcast'
+              ? 'bg-teal-600 text-white shadow-xs'
+              : 'bg-white text-slate-700 border border-surface-border'
+          }`}
+        >
+          <Radio className="w-3.5 h-3.5" />
+          <span>Emergency Dispatcher</span>
+        </button>
+      </div>
+
       {/* Two-Column Admin Layout (DESIGN View 6) */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
         
-        {/* Left Sidebar Navigation */}
-        <aside className="space-y-2">
-          <div className="bg-white rounded-2xl border border-surface-border p-3 shadow-card-soft space-y-1">
+        {/* Left Sidebar Navigation (Desktop / Tablet) */}
+        <aside className="hidden md:block space-y-2">
+          <div className="bg-white rounded-2xl border border-surface-border p-3 shadow-card-soft space-y-1 sticky top-24">
             <button
               onClick={() => setActiveTab('overview')}
               className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2.5 ${
@@ -288,7 +351,52 @@ export default function AdminDashboard({ onOpenBroadcast }) {
                 <span className="text-xs font-mono text-slate-400">Total Users: {users.length}</span>
               </div>
 
-              <div className="overflow-x-auto">
+              {/* Mobile RBAC Cards */}
+              <div className="md:hidden space-y-3">
+                {users.map((u) => (
+                  <div key={u._id} className="p-3.5 rounded-xl border border-surface-border bg-slate-50/50 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <Avatar
+                          name={u.name}
+                          src={u.avatar}
+                          className="w-8 h-8 rounded-full border border-slate-200 text-[10px]"
+                        />
+                        <div>
+                          <p className="font-bold text-textPrimary text-xs">{u.name}</p>
+                          <p className="font-mono text-[10px] text-slate-500 truncate max-w-[170px]">{u.email}</p>
+                        </div>
+                      </div>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                          u.role === 'admin'
+                            ? 'bg-teal-100 text-teal-900 border border-teal-300'
+                            : u.role === 'author'
+                            ? 'bg-teal-50 text-teal-800 border border-teal-200'
+                            : 'bg-slate-100 text-slate-700'
+                        }`}
+                      >
+                        {u.role}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-200">
+                      <span className="text-[10px] font-mono text-slate-400">Change Role:</span>
+                      <select
+                        value={u.role}
+                        onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                        className="p-1.5 bg-white border border-slate-200 rounded-lg text-xs font-mono font-bold text-slate-700 focus:outline-none focus:border-teal-500"
+                      >
+                        <option value="reader">Reader</option>
+                        <option value="author">Author</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop RBAC Table */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-slate-100 text-slate-400 font-mono text-[11px] uppercase tracking-wider">
@@ -422,7 +530,32 @@ export default function AdminDashboard({ onOpenBroadcast }) {
                 </span>
               </div>
 
-              <div className="overflow-x-auto">
+              {/* Mobile Audit Cards */}
+              <div className="md:hidden space-y-3">
+                {auditLogs.map((log) => (
+                  <div key={log._id} className="p-3.5 rounded-xl border border-surface-border bg-slate-50/50 space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="font-bold text-textPrimary text-xs line-clamp-1">{log.articleTitle}</p>
+                        <p className="font-mono text-[10px] text-slate-500">Editor: {log.editorName}</p>
+                      </div>
+                      <span className="font-mono text-[10px] text-slate-400 flex-shrink-0">
+                        {new Date(log.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs font-mono">
+                      <span className="text-amber-700 line-through font-bold">{log.originalStatus}</span>
+                      <span className="text-teal-700 font-bold">➔ {log.overriddenStatus}</span>
+                    </div>
+                    <p className="text-slate-700 text-xs bg-white p-2 rounded-lg border border-slate-200">
+                      "{log.reason}"
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Audit Table */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-slate-100 text-slate-400 font-mono text-[11px] uppercase tracking-wider">
@@ -532,7 +665,7 @@ export default function AdminDashboard({ onOpenBroadcast }) {
 
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase transition-all flex items-center gap-2 shadow-sm"
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 shadow-sm"
                 >
                   <Send className="w-4 h-4" />
                   <span>Transmit Real-Time Alert</span>

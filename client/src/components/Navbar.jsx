@@ -11,7 +11,9 @@ import {
   ChevronDown,
   LayoutDashboard,
   Compass,
-  Bell
+  Bell,
+  Menu,
+  X
 } from 'lucide-react';
 import Avatar from './Avatar';
 import { useSocket } from '../context/SocketContext';
@@ -28,6 +30,7 @@ export default function Navbar({
   const { notifications, unreadNotificationCount, markNotificationsRead } = useSocket();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchQuery || '');
 
   useEffect(() => {
@@ -123,8 +126,8 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Center Search Input */}
-          <div className="flex-1 max-w-md mx-2 sm:mx-6">
+          {/* Center Search Input (hidden on mobile, visible on sm and up) */}
+          <div className="hidden sm:block flex-1 max-w-md mx-2 sm:mx-6">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                 <Search className="w-4 h-4" />
@@ -299,15 +302,161 @@ export default function Navbar({
             ) : (
               <button
                 onClick={onOpenAuth}
-                className="px-4 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wide shadow-sm transition-all flex items-center gap-1.5"
+                className="hidden sm:flex px-4 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wide shadow-sm transition-all items-center gap-1.5"
               >
                 <User className="w-3.5 h-3.5" />
                 <span>Sign In</span>
               </button>
             )}
+
+            {/* Mobile Hamburger Toggle Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(!mobileMenuOpen);
+                setShowUserMenu(false);
+                setShowNotifications(false);
+              }}
+              className="md:hidden flex h-9 w-9 items-center justify-center rounded-xl border border-surface-border bg-white text-slate-600 shadow-xs hover:border-teal-400 hover:text-teal-700 transition-colors"
+              aria-label="Toggle navigation menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5 text-teal-700" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
 
         </div>
+
+        {/* Mobile Dropdown Drawer Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden pt-4 pb-2 border-t border-slate-100 mt-3 space-y-3 animate-fade-in">
+            {/* Mobile Search Bar (for screens smaller than sm) */}
+            <div className="sm:hidden relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <Search className="w-4 h-4" />
+              </div>
+              <input
+                type="text"
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+                placeholder="Search verified articles..."
+                className="w-full pl-9 pr-3 py-2 bg-canvas border border-surface-border rounded-xl text-xs text-textPrimary placeholder-slate-400 focus:outline-none focus:border-teal-500"
+              />
+            </div>
+
+            {/* Mobile Navigation Links */}
+            <div className="grid grid-cols-1 gap-1 text-xs font-semibold">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onChangeView) onChangeView('home');
+                  if (onSelectCategory) onSelectCategory('All');
+                }}
+                className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-colors text-left ${
+                  currentView === 'home'
+                    ? 'bg-teal-50 text-teal-800 font-bold border border-teal-200'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <Newspaper className="w-4 h-4 text-teal-600" />
+                <span>Live Feed</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onChangeView) onChangeView('forum');
+                }}
+                className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-colors text-left ${
+                  currentView === 'forum'
+                    ? 'bg-teal-50 text-teal-800 font-bold border border-teal-200'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <MessageSquare className="w-4 h-4 text-teal-600" />
+                <span>Community Forum</span>
+              </button>
+
+              {isAuthor && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onChangeView) onChangeView('author');
+                  }}
+                  className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-colors text-left ${
+                    currentView === 'author'
+                      ? 'bg-teal-50 text-teal-800 font-bold border border-teal-200'
+                      : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <PenTool className="w-4 h-4 text-teal-600" />
+                  <span>Author Studio</span>
+                </button>
+              )}
+
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onChangeView) onChangeView('admin');
+                  }}
+                  className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-colors text-left ${
+                    currentView === 'admin'
+                      ? 'bg-teal-50 text-teal-800 font-bold border border-teal-200'
+                      : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <ShieldAlert className="w-4 h-4 text-teal-600" />
+                  <span>Admin Panel</span>
+                </button>
+              )}
+            </div>
+
+            {/* Mobile User Profile / Auth Action */}
+            <div className="pt-2 border-t border-slate-100">
+              {isAuthenticated ? (
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-surface-border">
+                  <div className="flex items-center gap-2.5">
+                    <Avatar
+                      name={user.name}
+                      src={user.avatar}
+                      className="w-8 h-8 rounded-lg border border-slate-200 text-[10px]"
+                    />
+                    <div>
+                      <p className="text-xs font-bold text-slate-900 leading-tight">
+                        {user.name}
+                      </p>
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-teal-700 font-bold">
+                        {user.role}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      logout();
+                    }}
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 text-xs font-medium border border-rose-100 transition-colors"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onOpenAuth) onOpenAuth();
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-xs transition-colors"
+                >
+                  <User className="w-4 h-4" />
+                  <span>Sign In</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   );

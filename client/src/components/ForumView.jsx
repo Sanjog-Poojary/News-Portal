@@ -218,13 +218,13 @@ export default function ForumView({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in space-y-8">
       
       {/* Forum Header */}
-      <div className="bg-white rounded-3xl border border-surface-border p-6 sm:p-10 shadow-card-soft flex flex-wrap items-center justify-between gap-6">
+      <div className="bg-white rounded-2xl sm:rounded-3xl border border-surface-border p-5 sm:p-10 shadow-card-soft flex flex-wrap items-center justify-between gap-4 sm:gap-6">
         <div>
           <div className="flex items-center gap-2 text-xs font-mono font-bold text-teal-700 uppercase tracking-wider mb-2">
             <MessageSquare className="w-4 h-4" />
             <span>Standalone Community Boards</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-textPrimary tracking-tight">
+          <h1 className="text-xl sm:text-3xl font-extrabold text-textPrimary tracking-tight">
             Community Discourse & Fact Audits
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
@@ -234,7 +234,7 @@ export default function ForumView({
 
         <button
           onClick={() => setIsCreatingThread(true)}
-          className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-sm flex items-center gap-2"
+          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-sm flex items-center justify-center gap-2"
         >
           <PlusCircle className="w-4 h-4" />
           <span>+ New Discussion Thread</span>
@@ -248,12 +248,33 @@ export default function ForumView({
         </div>
       )}
 
+      {/* Mobile Horizontal Boards Chip Strip */}
+      <div className="md:hidden flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+        {BOARDS.map((b) => {
+          const isActive = activeBoard === b.id;
+          return (
+            <button
+              key={b.id}
+              onClick={() => setActiveBoard(b.id)}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex-shrink-0 ${
+                isActive
+                  ? 'bg-teal-600 text-white shadow-xs'
+                  : 'bg-white text-slate-700 border border-surface-border hover:bg-slate-50'
+              }`}
+            >
+              <Hash className={`w-3.5 h-3.5 ${isActive ? 'text-teal-100' : 'text-teal-600'}`} />
+              <span>{b.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* Two-Column Split (DESIGN View 7) */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
         
-        {/* Left Column: Category Boards */}
-        <div className="space-y-4">
-          <div className="bg-white rounded-2xl border border-surface-border p-4 shadow-card-soft space-y-2">
+        {/* Left Column: Category Boards (Desktop / Tablet) */}
+        <div className="hidden md:block space-y-4">
+          <div className="bg-white rounded-2xl border border-surface-border p-4 shadow-card-soft space-y-2 sticky top-24">
             <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400 font-bold px-2 mb-2">
               Topic Boards
             </h3>
