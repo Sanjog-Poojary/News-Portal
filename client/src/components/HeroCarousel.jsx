@@ -33,7 +33,7 @@ export default function HeroCarousel({ articles = [], onSelectArticle }) {
     <section className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Outer Shell (Double-Bezel architecture in Ivory & Teal) */}
       <div className="double-bezel shadow-sm">
-        <div className="double-bezel-inner relative overflow-hidden rounded-[calc(1.25rem-1px)] min-h-[440px] md:min-h-[480px] flex flex-col justify-end">
+        <div className="double-bezel-inner relative overflow-hidden rounded-[calc(1.25rem-1px)] min-h-[360px] sm:min-h-[440px] md:min-h-[480px] flex flex-col justify-end">
           
           {/* Background Image with Warm Ivory Gradient Overlay */}
           <div className="absolute inset-0 z-0">
@@ -48,7 +48,7 @@ export default function HeroCarousel({ articles = [], onSelectArticle }) {
           </div>
 
           {/* Foreground Editorial Content */}
-          <div className="relative z-10 p-5 sm:p-10 md:p-12 max-w-4xl">
+          <div className="relative z-10 p-4 sm:p-10 md:p-12 max-w-4xl">
             {/* Meta Strip */}
             <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-3 sm:mb-4">
               <span className="px-3 py-1 rounded-full text-xs font-mono uppercase tracking-wider font-bold bg-teal-50 text-teal-800 border border-teal-200">
@@ -71,7 +71,7 @@ export default function HeroCarousel({ articles = [], onSelectArticle }) {
             {/* Main Headline */}
             <h1
               onClick={() => onSelectArticle && onSelectArticle(current)}
-              className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-textPrimary tracking-tight leading-tight mb-3 sm:mb-4 hover:text-teal-700 cursor-pointer transition-colors"
+              className="text-lg sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-textPrimary tracking-tight leading-tight mb-3 sm:mb-4 hover:text-teal-700 cursor-pointer transition-colors"
             >
               {current.title}
             </h1>
@@ -82,7 +82,7 @@ export default function HeroCarousel({ articles = [], onSelectArticle }) {
             </p>
 
             {/* Author Credit & CTA */}
-            <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4 pt-3 sm:pt-4 border-t border-surface-border">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pt-3 sm:pt-4 border-t border-surface-border">
               <div className="flex items-center gap-3">
                 <Avatar
                   name={current.author?.name}

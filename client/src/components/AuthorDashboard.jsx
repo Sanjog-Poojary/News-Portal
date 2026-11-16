@@ -491,7 +491,7 @@ export default function AuthorDashboard({ onSelectArticle }) {
                     key={idx}
                     className="p-3.5 rounded-xl bg-white border border-teal-100 text-xs flex flex-wrap items-center justify-between gap-3 shadow-xs"
                   >
-                    <div className="flex-1 min-w-[280px]">
+                    <div className="flex-1 min-w-0 w-full">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">
                           #{idx + 1}

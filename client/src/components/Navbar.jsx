@@ -43,12 +43,12 @@ export default function Navbar({
   }, [localSearch, setSearchQuery]);
 
   return (
-    <header className="sticky top-0 z-40 w-full pt-3 px-4 sm:px-6 lg:px-8 pointer-events-none">
-      <nav className="max-w-7xl mx-auto pointer-events-auto rounded-2xl glass-panel px-4 sm:px-6 py-3 shadow-md transition-all duration-300">
-        <div className="flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 w-full pt-2 sm:pt-3 px-2 sm:px-6 lg:px-8 pointer-events-none">
+      <nav className="max-w-7xl mx-auto pointer-events-auto rounded-2xl glass-panel px-2.5 sm:px-6 py-2.5 sm:py-3 shadow-md transition-all duration-300">
+        <div className="flex items-center justify-between gap-2 sm:gap-4">
           
           {/* Brand Logo */}
-          <div className="flex items-center gap-7">
+          <div className="flex items-center gap-3 sm:gap-7 min-w-0">
             <button
               onClick={() => onChangeView && onChangeView('home')}
               className="group flex items-center gap-2.5 text-left focus:outline-none"
@@ -56,7 +56,7 @@ export default function Navbar({
               <div className="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center shadow-sm group-hover:bg-teal-700 transition-all">
                 <span className="font-mono font-black text-base tracking-tighter">N</span>
               </div>
-              <div className="flex flex-col">
+              <div className="hidden sm:flex flex-col">
                 <div className="flex items-center gap-1">
                   <span className="font-extrabold tracking-tight text-base text-textPrimary font-mono">NEWS</span>
                   <span className="text-teal-600 font-mono font-black">.PORTAL</span>
@@ -148,7 +148,7 @@ export default function Navbar({
           </div>
 
           {/* Right Section: Auth & Role Profile */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {isAuthenticated ? (
               <>
                 <div className="relative">

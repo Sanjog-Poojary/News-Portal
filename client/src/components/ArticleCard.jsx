@@ -84,7 +84,7 @@ export default function ArticleCard({ article, onSelectArticle }) {
       </div>
 
       {/* Card Body */}
-      <div className="p-5 flex-1 flex flex-col justify-between bg-white">
+      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-white">
         <div>
           {/* Claim Verification Status Tag */}
           <div className="flex items-center gap-2 mb-2 text-[11px] font-mono text-slate-500">
@@ -111,7 +111,7 @@ export default function ArticleCard({ article, onSelectArticle }) {
         </div>
 
         {/* Card Footer: Author + Metrics */}
-        <div className="pt-3 border-t border-surface-border flex items-center justify-between text-xs">
+        <div className="pt-3 border-t border-surface-border flex flex-wrap items-center justify-between gap-2 text-xs">
           <div className="flex items-center gap-2.5">
             <Avatar
               name={article.author?.name}
@@ -123,7 +123,7 @@ export default function ArticleCard({ article, onSelectArticle }) {
             </span>
           </div>
 
-          <div className="flex items-center gap-3 text-slate-500 text-[11px] font-mono">
+          <div className="flex items-center gap-2 sm:gap-3 text-slate-500 text-[11px] font-mono">
             <button
               onClick={handleLike}
               className={`flex items-center gap-1 hover:text-rose-600 transition-colors ${

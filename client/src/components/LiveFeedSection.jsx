@@ -63,12 +63,12 @@ export default function LiveFeedSection({ items = [], onStartDiscussion }) {
 
       {selectedItem && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/30 px-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-slate-950/30 px-2 sm:px-4 pb-2 sm:pb-0 backdrop-blur-sm"
           role="presentation"
           onClick={() => setSelectedItem(null)}
         >
           <article
-            className="w-full max-w-xl rounded-2xl border border-teal-200 bg-white p-6 shadow-2xl"
+            className="w-full max-w-xl max-h-[88dvh] overflow-y-auto rounded-2xl sm:rounded-2xl border border-teal-200 bg-white p-4 sm:p-6 shadow-2xl"
             role="dialog"
             aria-modal="true"
             aria-labelledby="live-feed-card-title"

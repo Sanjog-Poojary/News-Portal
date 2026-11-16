@@ -477,7 +477,7 @@ export default function AdminDashboard({ onOpenBroadcast }) {
                       key={item.id}
                       className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-4"
                     >
-                      <div className="flex-1 min-w-[280px]">
+                      <div className="flex-1 min-w-0 w-full">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-700">
                             {item.type}
