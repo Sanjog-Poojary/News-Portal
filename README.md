@@ -32,7 +32,14 @@ docker compose up --build
 
 Keep `server/.env` local. For deployment, provide `JWT_SECRET`, `GNEWS_API_KEY`, and other environment values through the hosting platform's secret manager.
 
-The GitHub Actions workflow in [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) builds the client, checks server syntax, and builds both Docker images on pushes and pull requests.
+The GitHub Actions workflow in [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) validates the client and server on pushes and pull requests. A push to `main` additionally builds and publishes immutable server and client images to GitHub Container Registry:
+
+```text
+ghcr.io/sanjog-poojary/news-portal-server:latest
+ghcr.io/sanjog-poojary/news-portal-client:latest
+```
+
+The images are also tagged with the commit SHA. To trigger a Render deployment after a successful publish, add a repository secret named `RENDER_DEPLOY_HOOK_URL` containing the Render deploy-hook URL. For a separately hosted client container, add repository variables named `VITE_API_BASE_URL` and `VITE_SOCKET_URL` so the production URLs are baked into the client image.
 
 ---
 
