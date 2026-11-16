@@ -128,7 +128,7 @@ export default function HeroCarousel({ articles = [], onSelectArticle }) {
           </div>
 
           {/* Slide Progress Indicators */}
-          <div className="absolute bottom-3 right-4 sm:bottom-4 sm:right-6 z-20 flex items-center gap-1.5">
+          <div className="absolute top-16 left-4 sm:top-auto sm:left-auto sm:bottom-4 sm:right-6 z-20 flex items-center gap-1.5">
             {activeList.map((_, idx) => (
               <button
                 key={idx}

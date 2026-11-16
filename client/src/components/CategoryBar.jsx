@@ -13,8 +13,24 @@ export default function CategoryBar({ activeCategory, onSelectCategory, counts =
   return (
     <div id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div className="flex items-center justify-between gap-4 border-b border-surface-border pb-4">
+        {/* Phone category selector */}
+        <label className="sm:hidden flex-1">
+          <span className="sr-only">Choose a news category</span>
+          <select
+            value={activeCategory}
+            onChange={(event) => onSelectCategory(event.target.value)}
+            className="w-full appearance-none rounded-xl border border-surface-border bg-white px-3 py-2.5 text-xs font-bold text-slate-700 shadow-xs focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+          >
+            {CATEGORIES.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.label}{counts[cat.id] !== undefined ? ` (${counts[cat.id]})` : ''}
+              </option>
+            ))}
+          </select>
+        </label>
+
         {/* Horizontal Chip Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+        <div className="hidden sm:flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
           {CATEGORIES.map((cat) => {
             const Icon = cat.icon;
             const isActive = activeCategory.toLowerCase() === cat.id.toLowerCase();
