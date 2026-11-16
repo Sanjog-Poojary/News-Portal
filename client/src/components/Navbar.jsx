@@ -171,7 +171,7 @@ export default function Navbar({
                   </button>
 
                   {showNotifications && (
-                    <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-surface-border bg-white p-2 text-xs shadow-dropdown z-50">
+                    <div className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-[calc(100vw-1.5rem)] sm:w-80 sm:max-w-none rounded-2xl border border-surface-border bg-white p-2 text-xs shadow-dropdown z-50">
                       <div className="flex items-center justify-between border-b border-slate-100 px-3 py-2.5">
                         <span className="font-bold text-slate-900">Notifications</span>
                         {notifications.length > 0 && (
@@ -192,8 +192,8 @@ export default function Navbar({
                         <div className="max-h-80 overflow-y-auto">
                           {notifications.map((notification) => (
                             <div key={notification.id} className="border-b border-slate-100 px-3 py-3 last:border-0">
-                              <p className="font-bold text-slate-900">{notification.title}</p>
-                              <p className="mt-1 leading-relaxed text-slate-600">{notification.message}</p>
+                              <p className="font-bold text-slate-900 break-words">{notification.title}</p>
+                              <p className="mt-1 leading-relaxed text-slate-600 break-words">{notification.message}</p>
                               <time className="mt-1 block text-[10px] font-mono text-slate-400">
                                 {new Date(notification.timestamp).toLocaleTimeString()}
                               </time>
