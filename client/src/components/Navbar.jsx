@@ -171,7 +171,7 @@ export default function Navbar({
                   </button>
 
                   {showNotifications && (
-                    <div className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-[calc(100vw-1.5rem)] sm:w-80 sm:max-w-none rounded-2xl border border-surface-border bg-white p-2 text-xs shadow-dropdown z-50">
+                    <div className="fixed inset-x-2 top-16 w-auto max-w-none rounded-2xl border border-surface-border bg-white p-2 text-xs shadow-dropdown z-50 sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-80">
                       <div className="flex items-center justify-between border-b border-slate-100 px-3 py-2.5">
                         <span className="font-bold text-slate-900">Notifications</span>
                         {notifications.length > 0 && (
